@@ -1,0 +1,36 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+	id("java")
+	id("org.springframework.boot").version("2.7.4")
+}
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation(platform(SpringBootPlugin.BOM_COORDINATES))
+	implementation("org.springframework.boot:spring-boot-devtools")
+	implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
+	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.webjars:webjars-locator-core")
+	implementation("org.webjars.npm:livereload-js:3.4.1")
+}
+
+testing {
+	suites {
+		test {
+			useJUnitJupiter()
+			dependencies {
+				implementation("org.springframework.boot:spring-boot-starter-test")
+			}
+		}
+	}
+}
