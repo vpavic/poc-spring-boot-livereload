@@ -12,10 +12,11 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 class LiveReloadScriptFilter extends OncePerRequestFilter {
 
-	private final int liveReloadPort;
+	private final String scriptSnippet;
 
 	LiveReloadScriptFilter(int liveReloadPort) {
-		this.liveReloadPort = liveReloadPort;
+		this.scriptSnippet = String.format(
+				"<script src=\"/webjars/livereload-js/dist/livereload.js?port=%d\"></script>", liveReloadPort);
 	}
 
 	@Override
@@ -24,8 +25,7 @@ class LiveReloadScriptFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 		String contentType = response.getContentType();
 		if ((contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType))) {
-			response.getWriter().write("<script src=\"/webjars/livereload-js/dist/livereload.js?port="
-					+ this.liveReloadPort + "\"></script>");
+			response.getWriter().write(this.scriptSnippet);
 		}
 	}
 
