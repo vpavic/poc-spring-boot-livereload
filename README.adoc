@@ -1,0 +1,18 @@
+= PoC: Spring Boot LiveReload
+
+Existing support for https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.devtools.livereloadLiveReload[LiveReload in Spring Boot] depends on LiveReload browser extensions.
+There are several concerns around this approach:
+
+- LiveReload browser extensions https://addons.mozilla.org/en-US/firefox/addon/livereload-web-extension/[&#91;1&#93;] https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei[&#91;2&#93;] have been unmaintained for several years
+- modern web development tools offer LiveReload (or equivalent) capabilities without needing to use any browser extensions
+
+This project is a proof of concept for LiveReload support in Spring Boot, without needing to use LiveReload browser extensions.
+The approach taken here basically consists of:
+
+- https://github.com/livereload/livereload-js[LiveReload.js] script - this project pulls it in as a https://webjars.org[WebJar] (`org.webjars.npm:livereload-js`)
+- a filter (see `LiveReloadScriptFilter`) that appends the script to responses that produce `text/html` - note that this PoC target the Servlet stack (meaning Spring MVC), Spring WebFlux would need a separate filter (one that implements `org.springframework.web.server.WebFilter`)
+- auto-configuration (see `LiveReloadScriptFilterAutoConfiguration`) that sets up the filter if DevTools are enabled
+
+Related issues:
+
+- https://github.com/spring-projects/spring-boot/issues/32111[spring-projects/spring-boot#32111]
