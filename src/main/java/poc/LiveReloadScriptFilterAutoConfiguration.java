@@ -2,6 +2,8 @@ package poc;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
 import org.springframework.boot.devtools.autoconfigure.DevToolsProperties;
 import org.springframework.boot.devtools.restart.ConditionalOnInitializedRestarter;
 import org.springframework.boot.devtools.restart.RestartScope;
@@ -9,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration(afterName = "org.springframework.boot.devtools.autoconfigure.LocalDevToolsAutoConfiguration")
 @ConditionalOnInitializedRestarter
+@ConditionalOnWebApplication(type = Type.SERVLET)
 class LiveReloadScriptFilterAutoConfiguration {
 
 	@Bean
