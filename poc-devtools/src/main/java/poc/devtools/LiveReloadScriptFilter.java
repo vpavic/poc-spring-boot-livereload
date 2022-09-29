@@ -1,4 +1,4 @@
-package poc;
+package poc.devtools;
 
 import java.io.IOException;
 

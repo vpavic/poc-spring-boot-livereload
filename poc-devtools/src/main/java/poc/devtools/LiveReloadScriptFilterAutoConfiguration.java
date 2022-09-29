@@ -1,6 +1,7 @@
-package poc;
+package poc.devtools;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication.Type;
@@ -11,12 +12,13 @@ import org.springframework.context.annotation.Bean;
 
 @AutoConfiguration(afterName = "org.springframework.boot.devtools.autoconfigure.LocalDevToolsAutoConfiguration")
 @ConditionalOnInitializedRestarter
+@ConditionalOnProperty(prefix = "spring.devtools.livereload", name = "enabled", matchIfMissing = true)
 @ConditionalOnWebApplication(type = Type.SERVLET)
 class LiveReloadScriptFilterAutoConfiguration {
 
 	@Bean
 	@RestartScope
-	@ConditionalOnProperty(prefix = "spring.devtools.livereload", name = "enabled", matchIfMissing = true)
+	@ConditionalOnMissingBean
 	LiveReloadScriptFilter liveReloadScriptFilter(DevToolsProperties properties) {
 		return new LiveReloadScriptFilter(properties.getLivereload().getPort());
 	}

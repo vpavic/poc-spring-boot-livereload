@@ -1,0 +1,17 @@
+[versions]
+spring-boot = "2.7.4"
+webjars-livereload = "3.4.1"
+
+[libraries]
+servlet-api = { module = "javax.servlet:javax.servlet-api" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
+spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+spring-webmvc = { module = "org.springframework:spring-webmvc" }
+webjars-livereload = { module = "org.webjars.npm:livereload-js", version.ref = "webjars-livereload" }
+webjars-locator = { module = "org.webjars:webjars-locator-core" }
+
+[plugins]
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
