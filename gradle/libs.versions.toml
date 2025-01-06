@@ -11,7 +11,7 @@ spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
 spring-webmvc = { module = "org.springframework:spring-webmvc" }
 webjars-livereload = { module = "org.webjars.npm:livereload-js", version.ref = "webjars-livereload" }
-webjars-locator = { module = "org.webjars:webjars-locator-core" }
+webjars-locator = { module = "org.webjars:webjars-locator-lite" }
 
 [plugins]
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
