@@ -17,8 +17,7 @@ class LiveReloadScriptFilterTests {
 		response.setContentType(MediaType.TEXT_HTML_VALUE);
 		LiveReloadScriptFilter filter = new LiveReloadScriptFilter(1234);
 		filter.doFilter(new MockHttpServletRequest(), response, new MockFilterChain());
-		assertThat(response.getContentAsString())
-				.endsWith("<script src=\"/webjars/livereload-js/dist/livereload.js?port=1234\"></script>");
+		assertThat(response.getContentAsString()).endsWith("<script src=\"/livereload.js?port=1234\"></script>");
 	}
 
 }

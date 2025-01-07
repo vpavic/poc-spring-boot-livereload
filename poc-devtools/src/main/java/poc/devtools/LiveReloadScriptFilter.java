@@ -15,8 +15,7 @@ class LiveReloadScriptFilter extends OncePerRequestFilter {
 	private final String scriptSnippet;
 
 	LiveReloadScriptFilter(int liveReloadPort) {
-		this.scriptSnippet = String.format(
-				"<script src=\"/webjars/livereload-js/dist/livereload.js?port=%d\"></script>", liveReloadPort);
+		this.scriptSnippet = String.format("<script src=\"/livereload.js?port=%d\"></script>", liveReloadPort);
 	}
 
 	@Override
