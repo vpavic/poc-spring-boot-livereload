@@ -24,7 +24,11 @@ class LiveReloadScriptFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 		String contentType = response.getContentType();
 		if ((contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType))) {
-			response.getWriter().write(this.scriptSnippet);
+			try {
+				response.getWriter().write(this.scriptSnippet);
+			}
+			catch (IllegalStateException ignored) {
+			}
 		}
 	}
 
