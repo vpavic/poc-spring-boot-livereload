@@ -1,14 +1,15 @@
 package poc.devtools;
 
-import java.io.IOException;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.util.ContentCachingResponseWrapper;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 class LiveReloadScriptFilter extends OncePerRequestFilter {
 
@@ -21,14 +22,17 @@ class LiveReloadScriptFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		filterChain.doFilter(request, response);
-		String contentType = response.getContentType();
+		ContentCachingResponseWrapper responseToUse = new ContentCachingResponseWrapper(response);
+		filterChain.doFilter(request, responseToUse);
+		String contentType = responseToUse.getContentType();
 		if ((contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType))) {
-			try {
-				response.getWriter().write(this.scriptSnippet);
-			}
-			catch (IllegalStateException ignored) {
-			}
+			String content = new String(responseToUse.getContentAsByteArray(), StandardCharsets.UTF_8);
+			String modifiedContent = content.replaceFirst("<head>", "<head>" + scriptSnippet);
+			response.setContentLength(modifiedContent.length());
+			response.getWriter().write(modifiedContent);
+		}
+		else {
+			responseToUse.copyBodyToResponse();
 		}
 	}
 
