@@ -27,7 +27,7 @@ class LiveReloadScriptFilter extends OncePerRequestFilter {
 		String contentType = responseToUse.getContentType();
 		if ((contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType))) {
 			String content = new String(responseToUse.getContentAsByteArray(), StandardCharsets.UTF_8);
-			String modifiedContent = content.replaceFirst("<head>", "<head>" + scriptSnippet);
+			String modifiedContent = content.replaceFirst("<head>", "<head>" + this.scriptSnippet);
 			response.setContentLength(modifiedContent.length());
 			response.getWriter().write(modifiedContent);
 		}

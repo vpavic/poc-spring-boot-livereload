@@ -22,14 +22,14 @@ class LiveReloadScriptFilterTests {
 	@ValueSource(strings = { MediaType.TEXT_HTML_VALUE, "text/html; charset=utf-8" })
 	void givenHtmlCompatibleContentTypeThenResponseShouldContainScript(String contentType) throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody =
-				"<html><head><title>test</title></head><body></body></html>".getBytes(StandardCharsets.UTF_8);
+		byte[] responseBody = "<html><head><title>test</title></head><body></body></html>"
+				.getBytes(StandardCharsets.UTF_8);
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(contentType);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
-		filter.doFilter(new MockHttpServletRequest(), response, filterChain);
+		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
 		assertThat(response.getContentAsString()).contains("<head><script src=\"/livereload.js?port=1234\"></script>");
 	}
 
@@ -43,7 +43,7 @@ class LiveReloadScriptFilterTests {
 			filterResponse.setContentType(contentType);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
-		filter.doFilter(new MockHttpServletRequest(), response, filterChain);
+		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
 		assertThat(response.getContentAsString()).doesNotContain("<script src=\"/livereload.js?port=1234\"></script>");
 	}
 
@@ -55,7 +55,7 @@ class LiveReloadScriptFilterTests {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
-		filter.doFilter(new MockHttpServletRequest(), response, filterChain);
+		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
 		assertThat(response.getContentAsString()).doesNotContain("<script src=\"/livereload.js?port=1234\"></script>");
 	}
 
