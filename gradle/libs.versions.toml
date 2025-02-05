@@ -1,5 +1,5 @@
 [versions]
-spring-boot = "3.4.1"
+spring-boot = "3.4.2"
 
 [libraries]
 servlet-api = { module = "jakarta.servlet:jakarta.servlet-api" }
