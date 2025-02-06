@@ -17,12 +17,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ConditionalOnInitializedRestarter
 @ConditionalOnProperty(prefix = "spring.devtools.livereload", name = "enabled", matchIfMissing = true)
 @ConditionalOnWebApplication(type = Type.SERVLET)
-class LiveReloadScriptFilterAutoConfiguration {
+class LiveReloadScriptInjectingFilterAutoConfiguration {
 
 	@Bean
 	@RestartScope
-	LiveReloadScriptFilter liveReloadScriptFilter(DevToolsProperties properties) {
-		return new LiveReloadScriptFilter(properties.getLivereload().getPort());
+	LiveReloadScriptInjectingFilter liveReloadScriptInjectingFilter(DevToolsProperties properties) {
+		return new LiveReloadScriptInjectingFilter(properties.getLivereload().getPort());
 	}
 
 	@Configuration(proxyBeanMethods = false)

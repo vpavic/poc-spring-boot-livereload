@@ -10,8 +10,8 @@ This project is a proof of concept for LiveReload support in Spring Boot, withou
 The approach taken here basically consists of:
 
 - https://github.com/livereload/livereload-js[LiveReload.js] script served as a static resource
-- a filter (see `LiveReloadScriptFilter`) that appends the script to responses that produce `text/html` - note that this PoC target the Servlet stack (meaning Spring MVC), Spring WebFlux would need a separate filter (one that implements `org.springframework.web.server.WebFilter`)
-- auto-configuration (see `LiveReloadScriptFilterAutoConfiguration`) that sets up the filter if DevTools are enabled
+- a filter (see `LiveReloadScriptInjectingFilter`) that appends the script to responses that produce `text/html` - note that this PoC target the Servlet stack (meaning Spring MVC), Spring WebFlux would need a separate filter (one that implements `org.springframework.web.server.WebFilter`)
+- auto-configuration (see `LiveReloadScriptInjectingFilterAutoConfiguration`) that sets up the filter if DevTools are enabled
 
 All of the above are handled by `poc-devtools`, which depends on `org.springframework.boot:spring-boot-devtools` and pulls it in transitively, while `poc-application` is a simple Spring Boot application that utilizes the `poc-devtools` and can be used to showcase improved LiveReload capabilities.
 
