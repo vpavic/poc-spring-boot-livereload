@@ -1,20 +1,23 @@
 = PoC: Spring Boot LiveReload
 
-Existing support for https://docs.spring.io/spring-boot/docs/current/reference/html/using.html#using.devtools.livereloadLiveReload[LiveReload in Spring Boot] depends on LiveReload browser extensions.
-There are several concerns around this approach:
+Existing support for https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.livereload[LiveReload in Spring Boot] depends on LiveReload browser extensions.
+There are several concerns related to that approach:
 
 - LiveReload browser extensions https://addons.mozilla.org/en-US/firefox/addon/livereload-web-extension/[&#91;1&#93;] https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei[&#91;2&#93;] have been unmaintained for several years
-- modern web development tools offer LiveReload (or equivalent) capabilities without needing to use any browser extensions
+- modern web development tools offer LiveReload (or similar) capabilities without needing to use any browser extensions
 
-This project is a proof of concept for LiveReload support in Spring Boot, without needing to use LiveReload browser extensions.
-The approach taken here basically consists of:
+This project is a proof of concept for an improved LiveReload support in Spring Boot that doesn't require usage of browser extensions.
+The approach taken in this PoC consists of:
 
 - https://github.com/livereload/livereload-js[LiveReload.js] script served as a static resource
-- a filter (see `LiveReloadScriptInjectingFilter`) that appends the script to responses that produce `text/html` - note that this PoC target the Servlet stack (meaning Spring MVC), Spring WebFlux would need a separate filter (one that implements `org.springframework.web.server.WebFilter`)
-- auto-configuration (see `LiveReloadScriptInjectingFilterAutoConfiguration`) that sets up the filter if DevTools are enabled
+- a Servlet filter (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilter.java[`LiveReloadScriptInjectingFilter`]) that injects LiveReload.js script element into the head of an HTML document being served
+- auto-configuration (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilterAutoConfiguration.java[`LiveReloadScriptInjectingFilterAutoConfiguration`]) that sets up the filter if DevTools are enabled
 
-All of the above are handled by `poc-devtools`, which depends on `org.springframework.boot:spring-boot-devtools` and pulls it in transitively, while `poc-application` is a simple Spring Boot application that utilizes the `poc-devtools` and can be used to showcase improved LiveReload capabilities.
+All of the above are handled by `poc-devtools`, which depends on `org.springframework.boot:spring-boot-devtools` and pulls it in transitively, while `poc-application` is a simple Spring Boot application that utilizes the `poc-devtools` and can be used to showcase the improved LiveReload capabilities.
 
-Related issues:
+NOTE: This PoC targets Servlet-stack (Spring Web MVC)
+
+Related issues/PRs:
 
 - https://github.com/spring-projects/spring-boot/issues/32111[spring-projects/spring-boot#32111]
+- https://github.com/spring-projects/spring-boot/pull/43697[spring-projects/spring-boot#43697]
