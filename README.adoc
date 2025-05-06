@@ -1,5 +1,7 @@
 = PoC: Spring Boot LiveReload
 
+image:https://github.com/vpavic/poc-spring-boot-livereload/actions/workflows/ci.yml/badge.svg["CI", link="https://github.com/vpavic/poc-spring-boot-livereload/actions/workflows/ci.yml"]
+
 Existing support for https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.livereload[LiveReload in Spring Boot] depends on LiveReload browser extensions.
 There are several concerns related to that approach:
 
