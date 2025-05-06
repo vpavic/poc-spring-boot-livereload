@@ -11,7 +11,7 @@ There are several concerns related to that approach:
 This project is a proof of concept for an improved LiveReload support in Spring Boot that doesn't require usage of browser extensions.
 The approach taken in this PoC consists of:
 
-- https://github.com/livereload/livereload-js[LiveReload.js] script served as a static resource
+- https://github.com/livereload/livereload-js[LiveReload.js] script served as a static resource (WebJar)
 - a Servlet filter (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilter.java[`LiveReloadScriptInjectingFilter`]) that injects LiveReload.js script element into the head of an HTML document being served
 - auto-configuration (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilterAutoConfiguration.java[`LiveReloadScriptInjectingFilterAutoConfiguration`]) that sets up the filter if DevTools are enabled
 

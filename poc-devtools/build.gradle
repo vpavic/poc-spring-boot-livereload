@@ -15,6 +15,7 @@ repositories {
 dependencies {
 	implementation(platform(libs.spring.boot.dependencies))
 	implementation(libs.spring.boot.devtools)
+	implementation(libs.webjars.livereload)
 
 	compileOnly(libs.servlet.api)
 	compileOnly(libs.spring.webmvc)

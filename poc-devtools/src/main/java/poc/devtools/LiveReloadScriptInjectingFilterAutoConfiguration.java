@@ -30,7 +30,8 @@ class LiveReloadScriptInjectingFilterAutoConfiguration {
 
 		@Override
 		public void addResourceHandlers(ResourceHandlerRegistry registry) {
-			registry.addResourceHandler("/livereload.js").addResourceLocations("classpath:livereload/");
+			registry.addResourceHandler("/livereload.js")
+					.addResourceLocations("classpath:/META-INF/resources/webjars/livereload-js/*/dist/");
 		}
 
 	}
