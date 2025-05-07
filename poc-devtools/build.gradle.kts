@@ -1,6 +1,5 @@
 plugins {
-	id("java")
-	alias(libs.plugins.spring.boot)
+	java
 }
 
 java {
@@ -15,18 +14,21 @@ repositories {
 
 dependencies {
 	implementation(platform(libs.spring.boot.dependencies))
-	implementation(libs.spring.boot.starter.thymeleaf)
-	implementation(libs.spring.boot.starter.web)
+	implementation(libs.spring.boot.devtools)
+	implementation(libs.webjars.livereload)
 
-	developmentOnly(project(":poc-devtools"))
+	compileOnly(libs.servlet.api)
+	compileOnly(libs.spring.webmvc)
 }
 
 testing {
 	suites {
-		test {
+		@Suppress("UnstableApiUsage", "unused")
+		val test by getting(JvmTestSuite::class) {
 			useJUnitJupiter()
 			dependencies {
 				implementation(libs.spring.boot.starter.test)
+				implementation(libs.spring.boot.starter.web)
 			}
 		}
 	}
