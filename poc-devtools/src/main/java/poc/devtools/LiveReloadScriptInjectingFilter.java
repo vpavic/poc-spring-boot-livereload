@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -26,19 +27,29 @@ class LiveReloadScriptInjectingFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
-		ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-		filterChain.doFilter(request, responseWrapper);
-		if (shouldInjectScript(responseWrapper)) {
-			String content = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
-			String modifiedContent = htmlHeadTagsPattern.matcher(content)
-					.replaceFirst((matchResult) -> matchResult.group() + this.scriptElement);
-			if (!modifiedContent.equals(content)) {
-				response.setContentLength(modifiedContent.length());
-				response.getWriter().write(modifiedContent);
-				return;
-			}
+		HttpServletResponse responseToUse = response;
+		if (shouldWrapRequest(request)) {
+			responseToUse = new ContentCachingResponseWrapper(response);
 		}
-		responseWrapper.copyBodyToResponse();
+		filterChain.doFilter(request, responseToUse);
+		if (responseToUse instanceof ContentCachingResponseWrapper responseWrapper) {
+			if (shouldInjectScript(responseToUse)) {
+				String content = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
+				String modifiedContent = htmlHeadTagsPattern.matcher(content)
+						.replaceFirst((matchResult) -> matchResult.group() + this.scriptElement);
+				if (!modifiedContent.equals(content)) {
+					response.setContentLength(modifiedContent.length());
+					response.getWriter().write(modifiedContent);
+					return;
+				}
+			}
+			responseWrapper.copyBodyToResponse();
+		}
+	}
+
+	private boolean shouldWrapRequest(HttpServletRequest request) {
+		String contentType = request.getHeader(HttpHeaders.ACCEPT);
+		return (contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType));
 	}
 
 	private boolean shouldInjectScript(HttpServletResponse response) {

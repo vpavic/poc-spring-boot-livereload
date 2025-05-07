@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -23,6 +24,8 @@ class LiveReloadScriptInjectingFilterTests {
 	@ParameterizedTest
 	@ValueSource(strings = { MediaType.TEXT_HTML_VALUE, "text/html; charset=utf-8" })
 	void givenHtmlCompatibleContentTypeThenShouldInjectScriptElement(String contentType) throws Exception {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addHeader(HttpHeaders.ACCEPT, contentType);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		byte[] responseBody = "<!DOCTYPE html><html lang=\"en\"><head><title>test</title></head><body></body></html>"
 				.getBytes(StandardCharsets.UTF_8);
@@ -30,8 +33,9 @@ class LiveReloadScriptInjectingFilterTests {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(contentType);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
+			filterResponse.setContentLength(responseBody.length);
 		};
-		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
+		this.filter.doFilter(request, response, filterChain);
 		assertThat(response.getContentLength()).isEqualTo(responseBody.length + SCRIPT_ELEMENT.length());
 		assertThat(response.getContentAsString()).containsOnlyOnce("<head>" + SCRIPT_ELEMENT);
 	}
@@ -43,14 +47,17 @@ class LiveReloadScriptInjectingFilterTests {
 			"<html><HEAD><title>test</title></head><body></body></html>",
 			"<html><title>test</title><body></body></html>" })
 	void givenValidHtmlThenShouldInjectScriptElement(String htmlContent) throws Exception {
+		MockHttpServletRequest request = new MockHttpServletRequest();
+		request.addHeader(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		byte[] responseBody = htmlContent.getBytes(StandardCharsets.UTF_8);
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(MediaType.TEXT_HTML_VALUE);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
+			filterResponse.setContentLength(responseBody.length);
 		};
-		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
+		this.filter.doFilter(request, response, filterChain);
 		assertThat(response.getContentLength()).isEqualTo(responseBody.length + SCRIPT_ELEMENT.length());
 		assertThat(response.getContentAsString()).containsOnlyOnce(SCRIPT_ELEMENT);
 	}
@@ -63,6 +70,7 @@ class LiveReloadScriptInjectingFilterTests {
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(contentType);
+			filterResponse.setContentLength(responseBody.length);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
@@ -76,6 +84,7 @@ class LiveReloadScriptInjectingFilterTests {
 		byte[] responseBody = "test".getBytes(StandardCharsets.UTF_8);
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
+			filterResponse.setContentLength(responseBody.length);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
@@ -90,6 +99,7 @@ class LiveReloadScriptInjectingFilterTests {
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(MediaType.TEXT_HTML_VALUE);
+			filterResponse.setContentLength(responseBody.length);
 			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
