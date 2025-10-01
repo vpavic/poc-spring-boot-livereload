@@ -22,9 +22,9 @@ dependencies {
 }
 
 testing {
+	@Suppress("UnstableApiUsage")
 	suites {
-		@Suppress("UnstableApiUsage", "unused")
-		val test by getting(JvmTestSuite::class) {
+		named<JvmTestSuite>("test") {
 			useJUnitJupiter()
 			dependencies {
 				implementation(libs.spring.boot.starter.test)
