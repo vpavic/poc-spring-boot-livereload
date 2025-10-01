@@ -49,12 +49,13 @@ class LiveReloadScriptInjectingFilter extends OncePerRequestFilter {
 
 	private boolean shouldWrapRequest(HttpServletRequest request) {
 		String contentType = request.getHeader(HttpHeaders.ACCEPT);
-		return (contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType));
+		return (contentType != null)
+				&& MediaType.parseMediaTypes(contentType).stream().anyMatch(MediaType.TEXT_HTML::isCompatibleWith);
 	}
 
 	private boolean shouldInjectScript(HttpServletResponse response) {
 		String contentType = response.getContentType();
-		return (contentType != null) && MediaType.TEXT_HTML.isCompatibleWith(MediaType.parseMediaType(contentType));
+		return (contentType != null) && MediaType.parseMediaType(contentType).isCompatibleWith(MediaType.TEXT_HTML);
 	}
 
 }
