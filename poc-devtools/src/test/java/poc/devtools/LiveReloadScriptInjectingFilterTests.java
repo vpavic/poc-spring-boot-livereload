@@ -9,9 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.util.FileCopyUtils;
-
-import java.nio.charset.StandardCharsets;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,16 +24,15 @@ class LiveReloadScriptInjectingFilterTests {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(HttpHeaders.ACCEPT, contentType);
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody = "<!DOCTYPE html><html lang=\"en\"><head><title>test</title></head><body></body></html>"
-				.getBytes(StandardCharsets.UTF_8);
+		String responseBody = "<!DOCTYPE html><html lang=\"en\"><head><title>test</title></head><body></body></html>";
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(contentType);
-			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
-			filterResponse.setContentLength(responseBody.length);
+			filterResponse.setContentLength(responseBody.length());
+			filterResponse.getWriter().write(responseBody);
 		};
 		this.filter.doFilter(request, response, filterChain);
-		assertThat(response.getContentLength()).isEqualTo(responseBody.length + SCRIPT_ELEMENT.length());
+		assertThat(response.getContentLength()).isEqualTo(responseBody.length() + SCRIPT_ELEMENT.length());
 		assertThat(response.getContentAsString()).containsOnlyOnce("<head>" + SCRIPT_ELEMENT);
 	}
 
@@ -46,19 +42,18 @@ class LiveReloadScriptInjectingFilterTests {
 			"<html><head with=\"attribute\"><title>test</title></head><body></body></html>",
 			"<html><HEAD><title>test</title></head><body></body></html>",
 			"<html><title>test</title><body></body></html>" })
-	void givenValidHtmlThenShouldInjectScriptElement(String htmlContent) throws Exception {
+	void givenValidHtmlThenShouldInjectScriptElement(String responseBody) throws Exception {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		request.addHeader(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE);
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody = htmlContent.getBytes(StandardCharsets.UTF_8);
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(MediaType.TEXT_HTML_VALUE);
-			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
-			filterResponse.setContentLength(responseBody.length);
+			filterResponse.setContentLength(responseBody.length());
+			filterResponse.getWriter().write(responseBody);
 		};
 		this.filter.doFilter(request, response, filterChain);
-		assertThat(response.getContentLength()).isEqualTo(responseBody.length + SCRIPT_ELEMENT.length());
+		assertThat(response.getContentLength()).isEqualTo(responseBody.length() + SCRIPT_ELEMENT.length());
 		assertThat(response.getContentAsString()).containsOnlyOnce(SCRIPT_ELEMENT);
 	}
 
@@ -66,44 +61,44 @@ class LiveReloadScriptInjectingFilterTests {
 	@ValueSource(strings = { MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE })
 	void givenIncompatibleContentTypeThenShouldNotInjectScriptElement(String contentType) throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody = "{}".getBytes(StandardCharsets.UTF_8);
+		String responseBody = "{}";
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(contentType);
-			filterResponse.setContentLength(responseBody.length);
-			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
+			filterResponse.setContentLength(responseBody.length());
+			filterResponse.getWriter().write(responseBody);
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
-		assertThat(response.getContentLength()).isEqualTo(responseBody.length);
+		assertThat(response.getContentLength()).isEqualTo(responseBody.length());
 		assertThat(response.getContentAsString()).doesNotContain(SCRIPT_ELEMENT);
 	}
 
 	@Test
 	void givenNoContentTypeThenShouldNotInjectScriptElement() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody = "test".getBytes(StandardCharsets.UTF_8);
+		String responseBody = "test";
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
-			filterResponse.setContentLength(responseBody.length);
-			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
+			filterResponse.setContentLength(responseBody.length());
+			filterResponse.getWriter().write(responseBody);
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
-		assertThat(response.getContentLength()).isEqualTo(responseBody.length);
+		assertThat(response.getContentLength()).isEqualTo(responseBody.length());
 		assertThat(response.getContentAsString()).doesNotContain(SCRIPT_ELEMENT);
 	}
 
 	@Test
 	void givenInvalidHtmlThenShouldNotInjectScriptElement() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		byte[] responseBody = "<!DOCTYPE html><head></head><body></body>".getBytes(StandardCharsets.UTF_8);
+		String responseBody = "<!DOCTYPE html><head></head><body></body>";
 		FilterChain filterChain = (filterRequest, filterResponse) -> {
 			((HttpServletResponse) filterResponse).setStatus(HttpServletResponse.SC_OK);
 			filterResponse.setContentType(MediaType.TEXT_HTML_VALUE);
-			filterResponse.setContentLength(responseBody.length);
-			FileCopyUtils.copy(responseBody, filterResponse.getOutputStream());
+			filterResponse.setContentLength(responseBody.length());
+			filterResponse.getWriter().write(responseBody);
 		};
 		this.filter.doFilter(new MockHttpServletRequest(), response, filterChain);
-		assertThat(response.getContentLength()).isEqualTo(responseBody.length);
+		assertThat(response.getContentLength()).isEqualTo(responseBody.length());
 		assertThat(response.getContentAsString()).doesNotContain(SCRIPT_ELEMENT);
 	}
 
