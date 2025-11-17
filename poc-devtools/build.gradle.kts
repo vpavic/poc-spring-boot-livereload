@@ -24,19 +24,14 @@ dependencies {
 	compileOnly(libs.spring.webmvc)
 }
 
-val copyLiveReloadScript by tasks.registering(Copy::class) {
+tasks.named<ProcessResources>("processResources") {
 	from(zipTree(livereload.incoming.files.singleFile)) {
-		include("**/dist/livereload.*js")
+		include("**/dist/livereload.js")
 		eachFile {
-			relativePath = RelativePath(true, relativePath.segments.last())
+			relativePath = RelativePath(true, "livereload", relativePath.segments.last())
 		}
 		includeEmptyDirs = false
 	}
-	into(layout.buildDirectory.dir("resources/main/livereload"))
-}
-
-tasks.named<Copy>("processResources") {
-	dependsOn(copyLiveReloadScript)
 }
 
 testing {
