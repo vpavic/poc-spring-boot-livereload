@@ -1,5 +1,5 @@
 [versions]
-spring-boot = "4.0.0"
+spring-boot = "4.0.1"
 webjars-livereload = "4.0.2"
 
 [libraries]
