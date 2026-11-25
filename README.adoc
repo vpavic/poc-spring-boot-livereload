@@ -13,7 +13,7 @@ The approach taken in this PoC consists of:
 
 - https://github.com/livereload/livereload-js[LiveReload.js] script served by a dedicated servlet (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptServlet.java[`LiveReloadScriptServlet`]), independently of the application's Spring MVC setup
 - a Servlet filter (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilter.java[`LiveReloadScriptInjectingFilter`]) that injects LiveReload.js script element into the head of an HTML document being served
-- auto-configuration (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilterAutoConfiguration.java[`LiveReloadScriptInjectingFilterAutoConfiguration`]) that sets up the filter if DevTools are enabled
+- auto-configuration (see link:poc-devtools/src/main/java/poc/devtools/LiveReloadScriptInjectingFilterAutoConfiguration.java[`LiveReloadScriptInjectingFilterAutoConfiguration`]) that sets up the filter and the servlet if DevTools LiveReload is enabled (`spring.devtools.livereload.enabled=true`)
 
 All of the above are handled by `poc-devtools`, which depends on `org.springframework.boot:spring-boot-devtools` and pulls it in transitively, while `poc-application` is a simple Spring Boot application that utilizes the `poc-devtools` and can be used to showcase the improved LiveReload capabilities.
 
