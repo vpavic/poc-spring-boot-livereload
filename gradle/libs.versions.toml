@@ -9,7 +9,7 @@ spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools
 spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test" }
 spring-boot-starter-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf" }
 spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web" }
-spring-webmvc = { module = "org.springframework:spring-webmvc" }
+spring-web = { module = "org.springframework:spring-web" }
 webjars-livereload = { module = "org.webjars.npm:livereload-js", version.ref = "webjars-livereload" }
 
 [plugins]

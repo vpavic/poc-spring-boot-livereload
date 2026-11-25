@@ -21,7 +21,7 @@ dependencies {
 	livereload(libs.webjars.livereload)
 
 	compileOnly(libs.servlet.api)
-	compileOnly(libs.spring.webmvc)
+	compileOnly(libs.spring.web)
 }
 
 tasks.named<ProcessResources>("processResources") {

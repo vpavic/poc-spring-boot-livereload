@@ -26,7 +26,7 @@ class LiveReloadScriptInjectingFilter extends OncePerRequestFilter {
 	private final String scriptPath;
 
 	LiveReloadScriptInjectingFilter(int liveReloadPort) {
-		this.scriptPath = "/livereload.js?port=" + liveReloadPort;
+		this.scriptPath = LiveReloadScriptServlet.PATH + "?port=" + liveReloadPort;
 	}
 
 	@Override
