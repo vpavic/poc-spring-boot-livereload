@@ -6,6 +6,7 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,7 +40,7 @@ class LiveReloadScriptInjectingFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		HttpServletResponse responseToUse = response;
-		if (!isAsyncDispatch(request) && acceptsHtml(request)) {
+		if (!isAsyncDispatch(request) && HttpMethod.GET.matches(request.getMethod()) && acceptsHtml(request)) {
 			responseToUse = new HtmlContentCachingResponseWrapper(response);
 		}
 		filterChain.doFilter(request, responseToUse);

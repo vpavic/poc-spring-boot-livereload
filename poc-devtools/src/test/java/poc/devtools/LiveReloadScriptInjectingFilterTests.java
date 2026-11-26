@@ -45,7 +45,7 @@ class LiveReloadScriptInjectingFilterTests {
 	@ValueSource(strings = { "text/html, application/xhtml+xml, */*;q=0.8",
 			"text/html;q=0.9, application/json" })
 	void givenBrowserNavigationAcceptHeaderThenShouldInjectScriptElement(String accept) throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
 		request.addHeader(HttpHeaders.ACCEPT, accept);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		this.filter.doFilter(request, response, writing(MediaType.TEXT_HTML_VALUE, HTML));
@@ -56,17 +56,40 @@ class LiveReloadScriptInjectingFilterTests {
 	@ValueSource(strings = { "*/*", "text/*", "image/avif,image/webp,*/*;q=0.8", "application/json", "text/html;q=0",
 			"not a media type" })
 	void givenRequestNotExplicitlyAcceptingHtmlThenShouldNotInjectScriptElement(String accept) throws Exception {
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
 		request.addHeader(HttpHeaders.ACCEPT, accept);
 		MockHttpServletResponse response = new MockHttpServletResponse();
 		this.filter.doFilter(request, response, writing(MediaType.TEXT_HTML_VALUE, HTML));
 		assertThat(response.getContentAsString()).isEqualTo(HTML);
 	}
 
+	@ParameterizedTest
+	@ValueSource(strings = { "POST", "PUT", "PATCH" })
+	void givenNonGetRequestThenShouldNotInjectScriptElement(String method) throws Exception {
+		MockHttpServletRequest request = htmlRequest();
+		request.setMethod(method);
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		this.filter.doFilter(request, response, writing(MediaType.TEXT_HTML_VALUE, HTML));
+		assertThat(response.getContentAsString()).isEqualTo(HTML);
+	}
+
+	@Test
+	void givenHeadRequestThenShouldPreserveContentLength() throws Exception {
+		MockHttpServletRequest request = htmlRequest();
+		request.setMethod("HEAD");
+		MockHttpServletResponse response = new MockHttpServletResponse();
+		FilterChain filterChain = (filterRequest, filterResponse) -> {
+			filterResponse.setContentType(MediaType.TEXT_HTML_VALUE);
+			filterResponse.setContentLength(HTML.length());
+		};
+		this.filter.doFilter(request, response, filterChain);
+		assertThat(response.getContentLength()).isEqualTo(HTML.length());
+	}
+
 	@Test
 	void givenNoAcceptHeaderThenShouldNotInjectScriptElement() throws Exception {
 		MockHttpServletResponse response = new MockHttpServletResponse();
-		this.filter.doFilter(new MockHttpServletRequest(), response, writing(MediaType.TEXT_HTML_VALUE, HTML));
+		this.filter.doFilter(new MockHttpServletRequest("GET", "/"), response, writing(MediaType.TEXT_HTML_VALUE, HTML));
 		assertThat(response.getContentAsString()).isEqualTo(HTML);
 	}
 
@@ -182,7 +205,7 @@ class LiveReloadScriptInjectingFilterTests {
 	}
 
 	private static MockHttpServletRequest htmlRequest() {
-		MockHttpServletRequest request = new MockHttpServletRequest();
+		MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
 		request.addHeader(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE);
 		return request;
 	}

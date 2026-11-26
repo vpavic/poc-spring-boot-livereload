@@ -58,7 +58,7 @@ class LiveReloadScriptInjectingFilterAutoConfigurationTests {
 		this.contextRunner
 			.withPropertyValues("spring.devtools.livereload.enabled=true", "spring.devtools.livereload.port=1234")
 			.run((context) -> {
-				MockHttpServletRequest request = new MockHttpServletRequest();
+				MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
 				request.addHeader(HttpHeaders.ACCEPT, MediaType.TEXT_HTML_VALUE);
 				MockHttpServletResponse response = new MockHttpServletResponse();
 				FilterChain filterChain = (filterRequest, filterResponse) -> {
