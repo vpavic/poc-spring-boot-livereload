@@ -1,6 +1,6 @@
 [versions]
 spring-boot = "4.2.0"
-webjars-livereload = "4.0.2"
+webjars-livereload = "4.0.3"
 
 [libraries]
 servlet-api = { module = "jakarta.servlet:jakarta.servlet-api" }
